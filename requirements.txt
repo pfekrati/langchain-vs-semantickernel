@@ -4,6 +4,7 @@ langchain
 langchain_openai
 langchain_core
 langchain-groq
+langgraph
 
 semantic-kernel
 
