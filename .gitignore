@@ -2,3 +2,4 @@
 /credentials/groq.py
 /credentials/bing.py
 /.venv/
+**/__pycache__/

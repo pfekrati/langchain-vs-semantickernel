@@ -12,21 +12,28 @@ from  credentials.bing import add_bing_env_variables
 
 
 def bing_search(query):
-    add_bing_env_variables()
-    bing_api_key = os.environ["BING_API_KEY"]
-    bing_api_endpoint =  os.environ["BING_API_ENDPOINT"]
 
-    headers = {
-        'Ocp-Apim-Subscription-Key': bing_api_key
-    }
+    ####################################################################
+    ######## commenting this out to remove the dependency on bing search
+    ####################################################################
 
-    params = {
-        'q': query,
-        'count': 1  # Number of search results to retrieve
-    }
+    # add_bing_env_variables()
+    # bing_api_key = os.environ["BING_API_KEY"]
+    # bing_api_endpoint =  os.environ["BING_API_ENDPOINT"]
 
-    response = requests.get(bing_api_endpoint, headers=headers, params=params)
-    response.raise_for_status()
-    search_results = response.json()
+    # headers = {
+    #     'Ocp-Apim-Subscription-Key': bing_api_key
+    # }
 
-    return search_results["webPages"]["value"][0]["snippet"]
+    # params = {
+    #     'q': query,
+    #     'count': 1  # Number of search results to retrieve
+    # }
+
+    # response = requests.get(bing_api_endpoint, headers=headers, params=params)
+    # response.raise_for_status()
+    # search_results = response.json()
+
+    # return search_results["webPages"]["value"][0]["snippet"]
+
+    return "The Kansas City Chiefs narrowly beat the San Francisco 49ers, becoming the 2024 Super Bowl champions"
