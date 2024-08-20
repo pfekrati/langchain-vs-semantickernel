@@ -1,4 +1,5 @@
 /credentials/azureopenai.py
+/credentials/azureopenai_mock.py
 /credentials/groq.py
 /credentials/bing.py
 /.venv/
