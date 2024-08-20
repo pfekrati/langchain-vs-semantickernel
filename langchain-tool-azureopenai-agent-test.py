@@ -40,7 +40,7 @@ async def main():
         
         agent = create_openai_tools_agent(model, tools, prompt)
 
-        agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
+        agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=False)
 
         response = await agent_executor.ainvoke({"input": "who won the 2024 super bowl?"})
         print(response['output'])
