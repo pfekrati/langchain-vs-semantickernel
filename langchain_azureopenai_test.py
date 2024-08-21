@@ -41,7 +41,7 @@ async def main(log:bool=False) -> float:
         execution_times.append(execution_time)
         if log:
             print(f"Langchain Execution time: {execution_time} seconds")
-        await asyncio.sleep(0.5)
+        await asyncio.sleep(0.2)
 
     execution_times.pop(0)
     average_time = sum(execution_times) / len(execution_times)
