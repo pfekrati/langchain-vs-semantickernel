@@ -10,4 +10,4 @@ def send_email(subject:str, text:str, email:str):
         text (str): email content
         name (str): email address of the recipient
     """
-    send_email_tool(subject, text, email)
+    send_email_tool("LangChain", subject, text, email)
