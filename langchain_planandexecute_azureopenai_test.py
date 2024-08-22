@@ -45,7 +45,7 @@ async def main(log:bool=False) -> float:
         agent = create_openai_functions_agent(model, tools, prompt)
         agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=False)
 
-        response = await agent_executor.ainvoke({"input": "send a one line email to Bob and tell him who won the 2024 super bowl"})
+        response = await agent_executor.ainvoke({"input": "search the web, find out who won the 2024 super bowl and then send a one line email to Bob and tell him . Use the search_email tool to find his email"})
         if log:
             print(response['output'])
 

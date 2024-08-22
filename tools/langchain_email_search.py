@@ -3,7 +3,7 @@ from tools.emaildirectory import search_email as search_email_tool
  
 @tool
 def search_email(name:str) -> str:
-    """use this tool to find the email address of a person
+    """use this tool to find the email address of a person using their name
     
     Args:
         name (str): name of the person you want to find the email address of

@@ -40,7 +40,7 @@ async def main(log:bool=False):
 
         history = ChatHistory()
         history.add_system_message("You are an AI agent who can help find information on the web and send emails.")
-        history.add_user_message("send a one line email to Bob and tell him who won the 2024 super bowl")
+        history.add_user_message("search the web, find out who won the 2024 super bowl and then send a one line email to Bob and tell him . Use the search_email tool to find his email")
 
         chat_completion : AzureChatCompletion = kernel.get_service(type=ChatCompletionClientBase)
         execution_settings = AzureChatPromptExecutionSettings()

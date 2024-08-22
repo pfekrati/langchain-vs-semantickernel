@@ -90,13 +90,13 @@ async def main(log:bool = False):
     #####################################################################################################
 
     print(f"testing the performance of plan and execute using azure open ai endpoint")
-    langchain_planandexecute_azureopenai_agent_average_time1 = await langchain_planandexecute_azureopenai_test_main(log)
     sk_planandexecute_azureopenai_average_time1 = await sk_planandexecute_azureopenai_test_main(log)
+    langchain_planandexecute_azureopenai_agent_average_time1 = await langchain_planandexecute_azureopenai_test_main(log)
 
     await asyncio.sleep(5)
 
-    sk_planandexecute_azureopenai_average_time2 = await sk_planandexecute_azureopenai_test_main(log)
     langchain_planandexecute_azureopenai_agent_average_time2 = await langchain_planandexecute_azureopenai_test_main(log)
+    sk_planandexecute_azureopenai_average_time2 = await sk_planandexecute_azureopenai_test_main(log)
 
     # Calculate the averages
     langchain_planandexecute_azureopenai_agent_test_average = (langchain_planandexecute_azureopenai_agent_average_time1 + langchain_planandexecute_azureopenai_agent_average_time2) / 2
