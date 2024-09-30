@@ -16,55 +16,38 @@ from tools.sk_websearch import BingWebSearchPlugin
 
 async def main(log:bool=False):
     add_azure_openai_env_variables()
-    execution_times = []
 
-    for _ in range(11):
+    kernel = Kernel()
 
-        # Start benchmarking
-        start_time = time.time()
+    chat_service =   AzureChatCompletion(
+        api_key=  os.environ["AZURE_OPENAI_KEY"],
+        endpoint= os.environ["AZURE_OPENAI_ENDPOINT"],
+        deployment_name = os.environ["AZURE_OPENAI_DEPLOYMENT_NAME"]
+    )
+    kernel.add_service(chat_service)
 
-        kernel = Kernel()
+    kernel.add_plugin(BingWebSearchPlugin(), plugin_name="BingWebSearchPlugin")
 
-        chat_service =   AzureChatCompletion(
-            api_key=  os.environ["AZURE_OPENAI_KEY"],
-            endpoint= os.environ["AZURE_OPENAI_ENDPOINT"],
-            deployment_name = os.environ["AZURE_OPENAI_DEPLOYMENT_NAME"]
-        )
-        kernel.add_service(chat_service)
+    history = ChatHistory()
+    history.add_system_message("You are an AI agent who can help find information on the web and answer questions.")
+    history.add_user_message("who won the 2024 super bowl?")
 
-        kernel.add_plugin(BingWebSearchPlugin(), plugin_name="BingWebSearchPlugin")
+    chat_completion : AzureChatCompletion = kernel.get_service(type=ChatCompletionClientBase)
+    execution_settings = AzureChatPromptExecutionSettings()
+    execution_settings.function_choice_behavior = FunctionChoiceBehavior.Auto()
 
-        history = ChatHistory()
-        history.add_system_message("You are an AI agent who can help find information on the web and answer questions.")
-        history.add_user_message("who won the 2024 super bowl?")
+    response = (await chat_completion.get_chat_message_contents(
+                chat_history=history,
+                kernel=kernel,
+                settings=execution_settings,
+                arguments=KernelArguments(),
+            ))[0]
 
-        chat_completion : AzureChatCompletion = kernel.get_service(type=ChatCompletionClientBase)
-        execution_settings = AzureChatPromptExecutionSettings()
-        execution_settings.function_choice_behavior = FunctionChoiceBehavior.Auto()
-
-        response = (await chat_completion.get_chat_message_contents(
-                    chat_history=history,
-                    kernel=kernel,
-                    settings=execution_settings,
-                    arguments=KernelArguments(),
-                ))[0]
-
-        if log:
-            print(str(response))
-
-        # End benchmarking
-        end_time = time.time()
-        execution_time = end_time - start_time
-        execution_times.append(execution_time)
-        if log:
-            print(f"SK Execution time: {execution_time} seconds")
-        await asyncio.sleep(1)
-
-    execution_times.pop(0)
-    average_time = sum(execution_times) / len(execution_times)
     if log:
-        print(f"SK Average execution time: {average_time} seconds")
-    return average_time
+        print(str(response))
+
+    await asyncio.sleep(1)
+
     
 
 if __name__ == "__main__":

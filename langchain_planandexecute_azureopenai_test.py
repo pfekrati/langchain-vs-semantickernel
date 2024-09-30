@@ -14,54 +14,35 @@ from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 
 
 
-async def main(log:bool=False) -> float:
+async def main(log:bool=False):
     add_azure_openai_env_variables()
 
-    execution_times = []
+    model = AzureChatOpenAI(
+        azure_endpoint=os.environ["AZURE_OPENAI_ENDPOINT"],
+        azure_deployment=os.environ["AZURE_OPENAI_DEPLOYMENT_NAME"],
+        openai_api_version=os.environ["AZURE_OPENAI_API_VERSION"],
+        api_key=os.environ["AZURE_OPENAI_KEY"],
+    )
 
-    for _ in range(11):
-        # Start benchmarking
-        start_time = time.time()
+    tools = [search_web_tool, search_email, send_email]
 
-        model = AzureChatOpenAI(
-            azure_endpoint=os.environ["AZURE_OPENAI_ENDPOINT"],
-            azure_deployment=os.environ["AZURE_OPENAI_DEPLOYMENT_NAME"],
-            openai_api_version=os.environ["AZURE_OPENAI_API_VERSION"],
-            api_key=os.environ["AZURE_OPENAI_KEY"],
-        )
+    prompt = ChatPromptTemplate.from_messages(
+        [
+            ("system", """You are an AI agent who can help find information on the web and send emails."""),
+            MessagesPlaceholder("chat_history", optional=True),
+            ("human", "{input}"),
+            MessagesPlaceholder("agent_scratchpad"),
+        ]
+    )
+    
+    agent = create_openai_functions_agent(model, tools, prompt)
+    agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=False)
 
-        tools = [search_web_tool, search_email, send_email]
-
-
-        prompt = ChatPromptTemplate.from_messages(
-            [
-                ("system", """You are an AI agent who can help find information on the web and send emails."""),
-                MessagesPlaceholder("chat_history", optional=True),
-                ("human", "{input}"),
-                MessagesPlaceholder("agent_scratchpad"),
-            ]
-        )
-        
-        agent = create_openai_functions_agent(model, tools, prompt)
-        agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=False)
-
-        response = await agent_executor.ainvoke({"input": "search the web, find out who won the 2024 super bowl and then send a one line email to Bob and tell him . Use the search_email tool to find his email"})
-        if log:
-            print(response['output'])
-
-        # End benchmarking
-        end_time = time.time()
-        execution_time = end_time - start_time
-        execution_times.append(execution_time)
-        if log:
-            print(f"Langchain Execution time: {execution_time} seconds")
-        await asyncio.sleep(1)
-
-    execution_times.pop(0)
-    average_time = sum(execution_times) / len(execution_times)
+    response = await agent_executor.ainvoke({"input": "search the web, find out who won the 2024 super bowl and then send a one line email to Bob and tell him . Use the search_email tool to find his email"})
     if log:
-        print(f"Langchain Average execution time: {average_time} seconds")
-    return average_time
+        print(response['output'])
+
+    await asyncio.sleep(1)
 
 
 if __name__ == "__main__":

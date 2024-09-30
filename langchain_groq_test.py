@@ -8,42 +8,24 @@ from credentials.groq import add_groq_env_variables
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_core.output_parsers import StrOutputParser
 
-async def main(log:bool=False) -> float:
+async def main(log:bool=False):
     add_groq_env_variables()
 
-    execution_times = []
+    model = ChatGroq(temperature=0, groq_api_key=os.environ["GROQ_API_KEY"], model_name=os.environ["GROQ_MODEL_ID"])
 
-    for _ in range(11):
-        # Start benchmarking
-        start_time = time.time()
+    messages = [
+        SystemMessage(content="Translate the following from English into Italian"),
+        HumanMessage(content="hi!"),
+    ]
 
-        model = ChatGroq(temperature=0, groq_api_key=os.environ["GROQ_API_KEY"], model_name=os.environ["GROQ_MODEL_ID"])
+    parser = StrOutputParser()
+    chain = model | parser
 
-        messages = [
-            SystemMessage(content="Translate the following from English into Italian"),
-            HumanMessage(content="hi!"),
-        ]
-
-        parser = StrOutputParser()
-        chain = model | parser
-
-        response = await chain.ainvoke(messages)
-        if log:
-            print(response)
-
-        # End benchmarking
-        end_time = time.time()
-        execution_time = end_time - start_time
-        execution_times.append(execution_time)
-        if log:
-            print(f"Langchain Execution time: {execution_time} seconds")
-        await asyncio.sleep(1)
-
-    execution_times.pop(0)
-    average_time = sum(execution_times) / len(execution_times)
+    response = await chain.ainvoke(messages)
     if log:
-        print(f"Langchain Average execution time: {average_time} seconds")
-    return average_time
+        print(response)
+
+    await asyncio.sleep(1)
 
 
 

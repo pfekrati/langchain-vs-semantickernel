@@ -1,4 +1,5 @@
 requests
+pyperf
 
 langchain
 langchain_openai
