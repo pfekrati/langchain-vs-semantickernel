@@ -8,14 +8,14 @@ from credentials.groq import add_groq_env_variables
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_core.output_parsers import StrOutputParser
 
-async def main(log:bool=False) -> float:
+async def main(numberOfTests:int,log:bool=False) -> float:
     add_groq_env_variables()
 
     execution_times = []
 
-    for _ in range(11):
+    for _ in range(numberOfTests+1):
         # Start benchmarking
-        start_time = time.time()
+        start_time = time.perf_counter()
 
         model = ChatGroq(temperature=0, groq_api_key=os.environ["GROQ_API_KEY"], model_name=os.environ["GROQ_MODEL_ID"])
 
@@ -32,7 +32,7 @@ async def main(log:bool=False) -> float:
             print(response)
 
         # End benchmarking
-        end_time = time.time()
+        end_time = time.perf_counter()
         execution_time = end_time - start_time
         execution_times.append(execution_time)
         if log:

@@ -10,14 +10,14 @@ from tools.langchain_websearch import search_web_tool
 from langchain.agents import AgentExecutor, create_openai_tools_agent, create_openai_functions_agent
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 
-async def main(log:bool=False) -> float:
+async def main(numberOfTests:int,log:bool=False) -> float:
     add_azure_openai_env_variables()
 
     execution_times = []
 
-    for _ in range(11):
+    for _ in range(numberOfTests+1):
         # Start benchmarking
-        start_time = time.time()
+        start_time =  time.perf_counter()
 
         model = AzureChatOpenAI(
             azure_endpoint=os.environ["AZURE_OPENAI_ENDPOINT"],
@@ -47,7 +47,7 @@ async def main(log:bool=False) -> float:
             print(response['output'])
 
         # End benchmarking
-        end_time = time.time()
+        end_time =  time.perf_counter()
         execution_time = end_time - start_time
         execution_times.append(execution_time)
         if log:

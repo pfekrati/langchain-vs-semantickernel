@@ -12,14 +12,14 @@ from semantic_kernel.connectors.ai.open_ai.prompt_execution_settings.azure_chat_
 from semantic_kernel.connectors.ai.function_call_behavior import FunctionCallBehavior
 import json
 
-async def main(log:bool=False) -> float:
+async def main(numberOfTests:int,log:bool=False) -> float:
     add_azure_openai_env_variables()
     execution_times = []
 
-    for _ in range(11):
+    for _ in range(numberOfTests+1):
 
         # Start benchmarking
-        start_time = time.time()
+        start_time = time.perf_counter()
 
         kernel = Kernel()
 
@@ -46,7 +46,7 @@ async def main(log:bool=False) -> float:
             print(str(response[0]))
         
         # End benchmarking
-        end_time = time.time()
+        end_time = time.perf_counter()
         execution_time = end_time - start_time
         execution_times.append(execution_time)
         if log:

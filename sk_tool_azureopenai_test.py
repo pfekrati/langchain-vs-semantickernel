@@ -14,14 +14,14 @@ from semantic_kernel.connectors.ai.function_choice_behavior import FunctionChoic
 from tools.sk_websearch import BingWebSearchPlugin
 
 
-async def main(log:bool=False):
+async def main(numberOfTests:int,log:bool=False):
     add_azure_openai_env_variables()
     execution_times = []
 
-    for _ in range(11):
+    for _ in range(numberOfTests+1):
 
         # Start benchmarking
-        start_time = time.time()
+        start_time =  time.perf_counter()
 
         kernel = Kernel()
 
@@ -53,7 +53,7 @@ async def main(log:bool=False):
             print(str(response))
 
         # End benchmarking
-        end_time = time.time()
+        end_time =  time.perf_counter()
         execution_time = end_time - start_time
         execution_times.append(execution_time)
         if log:

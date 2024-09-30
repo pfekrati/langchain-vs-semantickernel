@@ -9,20 +9,20 @@ from sk_planandexecute_azureopenai_test import main as sk_planandexecute_azureop
 import asyncio
 
 
-async def main(log:bool = False):
+async def main(numberOfTests:int = 100, log:bool = False):
     #####################################################################################################
     #####################################################################################################
     # performance test using mocked azure open ai endpoint 
     #####################################################################################################
     #####################################################################################################
     print(f"testing the performance of chat compeletion using mocked azure open ai endpoint")
-    langchain_azureopenai_average_time_1 = await langchain_azureopenai_test_main(log)
-    sk_azureopenai_average_time_1 = await sk_azureopenai_test_main(log)
+    langchain_azureopenai_average_time_1 = await langchain_azureopenai_test_main(numberOfTests,log)
+    sk_azureopenai_average_time_1 = await sk_azureopenai_test_main(numberOfTests,log)
     
     await asyncio.sleep(5)
 
-    sk_azureopenai_average_time_2 = await sk_azureopenai_test_main(log)
-    langchain_azureopenai_average_time_2 = await langchain_azureopenai_test_main(log)
+    sk_azureopenai_average_time_2 = await sk_azureopenai_test_main(numberOfTests,log)
+    langchain_azureopenai_average_time_2 = await langchain_azureopenai_test_main(numberOfTests,log)
 
     # Calculate the averages
     langchain_azureopenai_test_average = (langchain_azureopenai_average_time_1 + langchain_azureopenai_average_time_2) / 2
@@ -109,4 +109,4 @@ async def main(log:bool = False):
     print(f"Percentage Difference: {planandexecute_azureopenai_test_percentage_difference:.2f}%")
 
 if __name__ == "__main__":
-    asyncio.run(main(log=False))
+    asyncio.run(main(500,log=False))
